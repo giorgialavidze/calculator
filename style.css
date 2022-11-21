@@ -1,0 +1,31 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.calculator{
+    display: flex;
+    width: 500px;
+    height: 320px;
+    background-color: rgb(126, 228, 126);
+}
+
+.key{
+   width: 70px;
+   height: 50px;
+}
+.keyboard{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    background-color: black;
+    height: 150px;
+    
+}
