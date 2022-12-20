@@ -1,14 +1,20 @@
 class Calculator {
     constructor(config){
-        this.firstNumberElement = config.firstNumberElement;
+        this.elements = {
+            firstNumber : config.firstNumberElement,
+            secondNumber : config.secondNumberElement,
+        }
         this.operatorElement = config.operatorElement;
-        this.secondNumberElement = config.secondNumberElement;
         this.summaryElement = config.summaryElement;
         
-        this.stage = "getFirstNumber";
+        this.stage = "firstNumber";
         this.operator = "";
-        this.firstNumber = "";
+        this.numbers = {
+            firstNumber : "",
+            secondNumber : "",
+        }
         this.operands = ["+","-","*","/","=","AC","DEL"];
+        this.answer = "";
     }
     
     PressKey(key){
@@ -18,37 +24,65 @@ class Calculator {
     }
 
     pressNumber(number){
-        if (this.stage === "getFirstNumber") {
-            this.compileFirstNumber(number);
+        this.compileNumber(number,this.stage);
+        if (this.stage === "secondNumber") {
+            this.operatorElement.style.fontSize = "14px"; 
         }
-        console.log(number);
     }
 
     pressOperator(operator){
-        if (this.stage === "getFirstNumber") {
-            this.stage = "getSecondNumber";
+        if (this.stage === "firstNumber" && this.numbers.firstNumber != "") {
+            this.stage = "secondNumber";
             this.operator = operator;
-            this.drawOperand(this.operatorElement,this.operator);
+            this.draw(this.operatorElement,this.operator);
+            this.elements.firstNumber.style.fontSize = "14px"; 
+            return;
         }
-        console.log(operator);
+        if (this.stage === "secondNumber" && this.numbers.secondNumber != "" && operator === "=") {
+            this.stage = "summary";
+            this.calculation(Number(this.numbers.firstNumber),Number(this.numbers.secondNumber),this.operator);
+            this.draw(this.summaryElement,this.answer);
+            this.elements.secondNumber.style.fontSize = "14px"; 
+            return;
+        }
+       
+       
 
+    }
+    
+    calculation(firstNumber,secondNumber,operator){
+        switch (operator) {
+            case "+":
+                this.answer = firstNumber + secondNumber;
+                break;
+            case "*":
+                this.answer = firstNumber * secondNumber;
+                break;
+            case "-":
+                this.answer = firstNumber - secondNumber;
+                break;
+            case "/":
+                this.answer = firstNumber / secondNumber;
+                break;
+        
+            default:
+                break;
+        }
     }
 
     //save input first number by user and show it on the screen
-    compileFirstNumber(number){
+    compileNumber(number,stage){
         // input symbol is operator or not
         
 
-        this.firstNumber += number;
-        this.drawNumber(this.firstNumberElement,this.firstNumber) ; 
+        this.numbers[stage] += number;
+        this.draw(this.elements[stage],this.numbers[stage]) ; 
     }
     
-    drawNumber(element,number){
+    draw(element,number){
         element.innerHTML = number;
     }
-    drawOperand(element,operator){
-        element.innerHTML = operator;
-    }
+    
 }
 
 const config = {
