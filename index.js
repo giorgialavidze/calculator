@@ -49,10 +49,6 @@ class Calculator {
         element.style.fontSize = size + "px"; 
     }
 
-    nextstate(){
-        this.state += 1;
-    }
-
     isNotNumberPrepared(number){
         return number === "" ? true : false;
     }
