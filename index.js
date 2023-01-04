@@ -1,53 +1,80 @@
 class Calculator {
     constructor(config){
         this.elements = {
-            firstNumber : config.firstNumberElement,
-            secondNumber : config.secondNumberElement,
+            0 : config.firstNumberElement,
+            1 : config.operatorElement,
+            2 : config.secondNumberElement,
+            3 : config.summaryElement,
         }
-        this.operatorElement = config.operatorElement;
-        this.summaryElement = config.summaryElement;
-        
-        this.stage = "firstNumber";
+        this.state = 0;
         this.operator = "";
         this.numbers = {
-            firstNumber : "",
-            secondNumber : "",
+            0 : "",
+            2 : "",
         }
-        this.operands = ["+","-","*","/","=","AC","DEL"];
+        this.operands = ["+","-","*","/","AC"];
         this.answer = "";
     }
     
+    pressEqual(){
+        if (this.isNotNumberPrepared(this.numbers[2])) return;
+        this.calculation(Number(this.numbers[0]),Number(this.numbers[2]),this.operator);
+        this.draw(this.elements[3],this.answer);
+        this.state = 4;
+    }
+
+    
+    backSpaceNumber(){
+        if (this.numbers[this.state].length < 1) return;
+        this.numbers[this.state] = this.numbers[this.state].substr(0,this.numbers[this.state].length - 1);
+        this.draw(this.elements[this.state],this.numbers[this.state]);
+
+    }
+
     PressKey(key){
-        if (this.operands.includes(key)) return this.pressOperator(key);
-        this.pressNumber(key);
-        
+        if (this.state === 4) return;
+        if (key === "=")  {return this.pressEqual(),this.addVisualEffects();}
+        if (key === "DEL")  {return this.backSpaceNumber()}
+        if (this.operands.includes(key)) {return this.pressOperator(key),this.addVisualEffects();}
+
+        this.pressNumber(key); 
+        this.addVisualEffects();
     }
 
     pressNumber(number){
-        this.compileNumber(number,this.stage);
-        if (this.stage === "secondNumber") {
-            this.operatorElement.style.fontSize = "14px"; 
-        }
+        this.compileNumber(number,this.state);
+    }
+
+    changeTextSize(element,size){
+        element.style.fontSize = size + "px"; 
+    }
+
+    nextstate(){
+        this.state += 1;
+    }
+
+    isNotNumberPrepared(number){
+        return number === "" ? true : false;
+    }
+
+    addVisualEffects(){
+        const smallSize = 14;
+        const bigSize = 25;
+        
+      
+
+       for (let i = 0; i < Object.keys(this.elements).length - 1; i++) {   
+        if (this.elements[i + 1].innerHTML != "") {
+            this.changeTextSize(this.elements[i],smallSize);
+        }        
+       }
     }
 
     pressOperator(operator){
-        if (this.stage === "firstNumber" && this.numbers.firstNumber != "") {
-            this.stage = "secondNumber";
-            this.operator = operator;
-            this.draw(this.operatorElement,this.operator);
-            this.elements.firstNumber.style.fontSize = "14px"; 
-            return;
-        }
-        if (this.stage === "secondNumber" && this.numbers.secondNumber != "" && operator === "=") {
-            this.stage = "summary";
-            this.calculation(Number(this.numbers.firstNumber),Number(this.numbers.secondNumber),this.operator);
-            this.draw(this.summaryElement,this.answer);
-            this.elements.secondNumber.style.fontSize = "14px"; 
-            return;
-        }
-       
-       
-
+       if (this.isNotNumberPrepared(this.numbers[this.state]))  return;
+       this.operator = operator;
+       this.draw(this.elements[1],operator);
+       this.state = 2; 
     }
     
     calculation(firstNumber,secondNumber,operator){
@@ -70,19 +97,14 @@ class Calculator {
         }
     }
 
-    //save input first number by user and show it on the screen
-    compileNumber(number,stage){
-        // input symbol is operator or not
-        
-
-        this.numbers[stage] += number;
-        this.draw(this.elements[stage],this.numbers[stage]) ; 
+    compileNumber(number,state){
+        this.numbers[state] += number;
+        this.draw(this.elements[state],this.numbers[state]) ; 
     }
     
     draw(element,number){
         element.innerHTML = number;
-    }
-    
+    }  
 }
 
 const config = {
@@ -102,4 +124,5 @@ keyboard.forEach(key => {
 });
 
 const calculator = new Calculator(config);
+
 
