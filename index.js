@@ -45,14 +45,15 @@ class Calculator {
             this.elements[key].innerHTML = "";
         });
     }
+    
 
     PressKey(key){
         if (key === "AC")  {return this.restart()}
-        if (this.state === 4) return;
+        if (this.state === 4) this.restart();
         if (key === "=")  {return this.pressEqual(),this.addVisualEffects();}
         if (key === "DEL")  {return this.backSpaceNumber()}
         if (this.operands.includes(key)) {return this.pressOperator(key),this.addVisualEffects();}
-
+        
         this.pressNumber(key); 
         this.addVisualEffects();
     }
