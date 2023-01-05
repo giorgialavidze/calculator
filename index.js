@@ -23,12 +23,10 @@ class Calculator {
         this.state = 4;
     }
 
-    
     backSpaceNumber(){
         if (this.numbers[this.state].length < 1) return;
         this.numbers[this.state] = this.numbers[this.state].substr(0,this.numbers[this.state].length - 1);
         this.draw(this.elements[this.state],this.numbers[this.state]);
-
     }
 
     restart(){
@@ -45,7 +43,6 @@ class Calculator {
             this.elements[key].innerHTML = "";
         });
     }
-    
 
     PressKey(key){
         if (key === "AC")  {return this.restart()}
@@ -107,7 +104,6 @@ class Calculator {
             case "/":
                 this.answer = firstNumber / secondNumber;
                 break;
-        
             default:
                 break;
         }
