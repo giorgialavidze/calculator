@@ -12,7 +12,7 @@ class Calculator {
             0 : "",
             2 : "",
         }
-        this.operands = ["+","-","*","/","AC"];
+        this.operands = ["+","-","*","/"];
         this.answer = "";
     }
     
@@ -31,7 +31,23 @@ class Calculator {
 
     }
 
+    restart(){
+        this.numbers[0] = "";
+        this.numbers[2] = "";
+        this.state = 0;
+        
+        this.clearScreen();
+        this.resetElementSizes();
+    }
+
+    clearScreen(){
+        Object.keys(this.elements).forEach(key => {
+            this.elements[key].innerHTML = "";
+        });
+    }
+
     PressKey(key){
+        if (key === "AC")  {return this.restart()}
         if (this.state === 4) return;
         if (key === "=")  {return this.pressEqual(),this.addVisualEffects();}
         if (key === "DEL")  {return this.backSpaceNumber()}
@@ -42,6 +58,8 @@ class Calculator {
     }
 
     pressNumber(number){
+        if( this.numbers[this.state].length < 1 && number === ".") return;
+        if(this.numbers[this.state].includes(".") && number === "." ) return;
         this.compileNumber(number,this.state);
     }
 
@@ -53,17 +71,18 @@ class Calculator {
         return number === "" ? true : false;
     }
 
+    resetElementSizes(){
+        for (let i = 0; i < Object.keys(this.elements).length - 1; i++) {        
+            this.changeTextSize(this.elements[i],25);
+        }      
+    }
+    
     addVisualEffects(){
-        const smallSize = 14;
-        const bigSize = 25;
-        
-      
-
-       for (let i = 0; i < Object.keys(this.elements).length - 1; i++) {   
-        if (this.elements[i + 1].innerHTML != "") {
-            this.changeTextSize(this.elements[i],smallSize);
-        }        
-       }
+        for (let i = 0; i < Object.keys(this.elements).length - 1; i++) {   
+            if (this.elements[i + 1].innerHTML != "") {
+                this.changeTextSize(this.elements[i],14);
+            }        
+        }
     }
 
     pressOperator(operator){
